@@ -37,8 +37,8 @@ export default function List ({todoData, setTodoData}) {
                         <div className='items-center'>
                           <input 
                             type="checkbox" 
-                            defaultChecked={false}
                             onChange={() => handleCompleteChange(data.id)}
+                            defaultChecked={false}
                           />
                           <span className={data.completed ? 'line-through' : undefined}>{data.title}</span>
                         </div>
