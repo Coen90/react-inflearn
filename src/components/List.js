@@ -39,6 +39,7 @@ const List = React.memo(({
     setIsEditing(false);
   }
 
+<<<<<<< HEAD
   if(isEditing) {
     return(
       <div
@@ -102,3 +103,43 @@ const List = React.memo(({
   
 
 export default List
+=======
+  return (
+    <div>
+      <DragDropContext>
+        <Droppable droppableId='to-dos'>
+          {(provided) => {
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              {todoData.map((data, index) => (
+                <Draggable
+                  key={data.id}
+                  draggableId={data.id.toString()}
+                  index={index}
+                >
+                  {(provided, snapshot) => {
+                    <div key={data.id} {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}>
+                      <div className='flex items-center justify-between w-full px-4 py-1 my-2 text-gray-600 bg-gray-100 rounded'>
+                        <div className='items-center'>
+                          <input 
+                            type="checkbox" 
+                            onChange={() => handleCompleteChange(data.id)}
+                            defaultChecked={false}
+                          />
+                          <span className={data.completed ? 'line-through' : undefined}>{data.title}</span>
+                        </div>
+                        <div className='items-center'>
+                          <button className='px-4 py-2 float-right' onClick={() => handleClick(data.id)}>X</button>
+                        </div>
+                      </div>
+                    </div>
+                  }}
+                </Draggable>
+              ))}
+            </div>
+          }}
+        </Droppable>
+      </DragDropContext>
+    </div>
+  )
+}
+>>>>>>> 288a006248da6b5c67d6bf01f583b0066dff9122
