@@ -1,26 +1,28 @@
-import React , {useState} from "react";
-import List from "./components/List";
-import Form from "./components/Form"
 import "./App.css";
+import {useState, useCallback} from "react";
+import Lists from "./components/Lists";
+import Form from "./components/Form"
 
-export default function App () {
+const initialTodoData = localStorage.getItem('todoData') ? JSON.parse(localStorage.getItem('todoData')) : [];
 
-  const [todoData, setTodoData] = useState([
-    {
-      id: 1,
-      title: '공부하기',
-      complete: false,
-    },
-    {
-      id: 2,
-      title: '청소하기',
-      complete: false,
-    },
-  ]);
+function App () {
+  console.log('App Component');
+  const [todoData, setTodoData] = useState(initialTodoData);
   const [value, setValue] = useState("");
+  
+  const handleClick = useCallback((id) => {
+    let newTodoData = todoData.filter(data => data.id !== id);
+    setTodoData(newTodoData);
+    localStorage.setItem('todoData', JSON.stringify(newTodoData));
+  }, [todoData])
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if(value.trim() === '') {
+      alert('공란은 입력할 수 없습니다.'); 
+      return;
+    }
     
     // 새로운 할 일 데이터
     let newTodo = {
@@ -30,9 +32,17 @@ export default function App () {
     }
 
     // 원래 있던 할 일에 새로운 할 일 더해주기
-    setTodoData(prev => [...prev, newTodo]);
+    setTodoData((prev) => [...prev, newTodo]);
+    localStorage.setItem('todoData', JSON.stringify([...todoData, newTodo]));
+
+    // 입력란 글씨 지우기
     setValue("");
 
+  }
+
+  const handleRemoveClick = () => {
+    setTodoData([]);
+    localStorage.setItem('todoData', JSON.stringify([]));
   }
 
   return (
@@ -40,12 +50,14 @@ export default function App () {
       <div className="w-full p-6 m-4 bg-white rounded shadow lg:w-3/4 lg:max-w-lg">
         <div className="flex justify-between mb-3">
           <h1>할 일 목록</h1>
+          <button onClick={handleRemoveClick}>Delete All</button>
         </div>
+        <Lists handleClick={handleClick} todoData={todoData} setTodoData={setTodoData}/>
 
-        <List todoData={todoData} setTodoData={setTodoData}/>
         <Form handleSubmit={handleSubmit} value={value} setValue={setValue}/>
-
       </div>
     </div>
   )
 }
+
+export default App;
